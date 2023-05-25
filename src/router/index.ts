@@ -95,6 +95,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     meta: {
       title: "表格",
       elIcon: "Grid"
+      // breadcrumb: false
     },
     children: [
       {
@@ -112,6 +113,29 @@ export const constantRoutes: RouteRecordRaw[] = [
         name: "VxeTable",
         meta: {
           title: "Vxe Table",
+          keepAlive: true
+        }
+      }
+    ]
+  },
+  {
+    path: "/mine-page",
+    component: Layout,
+    redirect: "/mine-page/test",
+    name: "MainPage",
+    meta: {
+      title: "我的页面",
+      elIcon: "User",
+      alwaysShow: true
+      // breadcrumb: false
+    },
+    children: [
+      {
+        path: "test",
+        component: () => import("@/views/mine-page/test/index.vue"),
+        name: "Test",
+        meta: {
+          title: "测试页面",
           keepAlive: true
         }
       }
