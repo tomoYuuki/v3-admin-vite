@@ -4,17 +4,17 @@ import type * as Login from "./types/login"
 /** 获取登录验证码 */
 export function getLoginCodeApi() {
   return request<Login.LoginCodeResponseData>({
-    url: "login/code",
+    url: "admin/verify/getRandomCode",
     method: "get"
   })
 }
 
 /** 登录并返回 Token */
-export function loginApi(data: Login.LoginRequestData) {
+export function loginApi(params: Login.LoginRequestData) {
   return request<Login.LoginResponseData>({
-    url: "users/login",
+    url: "admin/verify",
     method: "post",
-    data
+    params
   })
 }
 

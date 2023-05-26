@@ -20,7 +20,7 @@ function createService() {
       // apiData 是 API 返回的数据
       const apiData = response.data as any
       // 这个 Code 是和后端约定的业务 Code
-      const code = apiData.code
+      const code = apiData.status
       // 如果没有 Code, 代表这不是项目后端开发的 API
       if (code === undefined) {
         ElMessage.error("非本系统的接口")

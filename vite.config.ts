@@ -36,8 +36,12 @@ export default (configEnv: ConfigEnv): UserConfigExport => {
       strictPort: false,
       /** 接口代理 */
       proxy: {
+        /** 如果匹配到/api/v1那么就进行反向代理
+         * 就将现在 baseUrl（/api/v1） + pathUrl(/getRandomCode) 拼到target后面
+         * 但是其实发现多了/api/v1 所以需要rewrite将/api/v1替换成空
+         */
         "/api/v1": {
-          target: "https://mock.mengxuegu.com/mock/63218b5fb4c53348ed2bc212/api/v1",
+          target: "https://fsy.zhifo.net.cn/fosiyun/api/v1",
           ws: true,
           /** 是否允许跨域 */
           changeOrigin: true,

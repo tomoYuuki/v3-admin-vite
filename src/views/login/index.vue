@@ -8,6 +8,10 @@ import { type FormInstance, FormRules } from "element-plus"
 import { getLoginCodeApi } from "@/api/login"
 import { type LoginRequestData } from "@/api/login/types/login"
 
+defineOptions({
+  name: "Login"
+})
+
 const router = useRouter()
 const loginFormRef = ref<FormInstance | null>(null)
 
@@ -17,18 +21,20 @@ const loading = ref(false)
 const codeUrl = ref("")
 /** 登录表单数据 */
 const loginForm: LoginRequestData = reactive({
-  username: "admin",
-  password: "12345678",
-  code: ""
+  loginName: "jykj001",
+  password: "jykj111111",
+  captcha: "",
+  captchaId: "",
+  operate: "login"
 })
 /** 登录表单校验规则 */
 const loginFormRules: FormRules = {
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  loginName: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [
     { required: true, message: "请输入密码", trigger: "blur" },
     { min: 8, max: 16, message: "长度在 8 到 16 个字符", trigger: "blur" }
   ],
-  code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
+  captcha: [{ required: true, message: "请输入验证码", trigger: "blur" }]
 }
 /** 登录逻辑 */
 const handleLogin = () => {
@@ -37,9 +43,11 @@ const handleLogin = () => {
       loading.value = true
       useUserStore()
         .login({
-          username: loginForm.username,
+          loginName: loginForm.loginName,
           password: loginForm.password,
-          code: loginForm.code
+          captcha: loginForm.captcha,
+          captchaId: loginForm.captchaId,
+          operate: "login"
         })
         .then(() => {
           router.push({ path: "/" })
@@ -59,12 +67,20 @@ const handleLogin = () => {
 /** 创建验证码 */
 const createCode = () => {
   // 先清空验证码的输入
-  loginForm.code = ""
+  loginForm.captcha = ""
   // 获取验证码
   codeUrl.value = ""
   getLoginCodeApi().then((res) => {
-    codeUrl.value = res.data
+    const code = res.data
+    loginForm.captchaId = code
+
+    const imageUrl = createImageUrl(code)
+    codeUrl.value = imageUrl
   })
+}
+/** 创建验证码图片 URL */
+const createImageUrl = (code: string) => {
+  return `https://fsy.zhifo.net.cn/fosiyun/api/v1/admin/verify/getPictureCode?captchaId=${code}`
 }
 
 /** 初始化验证码 */
@@ -82,7 +98,7 @@ createCode()
         <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" @keyup.enter="handleLogin">
           <el-form-item prop="username">
             <el-input
-              v-model.trim="loginForm.username"
+              v-model.trim="loginForm.loginName"
               placeholder="用户名"
               type="text"
               tabindex="1"
@@ -103,7 +119,7 @@ createCode()
           </el-form-item>
           <el-form-item prop="code">
             <el-input
-              v-model.trim="loginForm.code"
+              v-model.trim="loginForm.captcha"
               placeholder="验证码"
               type="text"
               tabindex="3"

@@ -26,13 +26,16 @@ export const useUserStore = defineStore("user", () => {
   const login = (loginData: LoginRequestData) => {
     return new Promise((resolve, reject) => {
       loginApi({
-        username: loginData.username,
+        loginName: loginData.loginName,
         password: loginData.password,
-        code: loginData.code
+        captcha: loginData.captcha,
+        captchaId: loginData.captchaId,
+        operate: "login"
       })
         .then((res) => {
-          setToken(res.data.token)
-          token.value = res.data.token
+          const { adminSessionId } = res.data
+          setToken(adminSessionId)
+          token.value = adminSessionId
           resolve(true)
         })
         .catch((error) => {
