@@ -2,7 +2,7 @@ import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios"
 import { useUserStoreHook } from "@/store/modules/user"
 import { ElMessage } from "element-plus"
 import { get } from "lodash-es"
-import { getToken } from "./cache/cookies"
+import localStorage from "./cache/localStorage"
 
 /** 创建请求实例 */
 function createService() {
@@ -92,7 +92,7 @@ function createRequestFunction(service: AxiosInstance) {
     const configDefault = {
       headers: {
         // 携带 Token
-        Authorization: "Bearer " + getToken(),
+        Authorization: "Bearer " + localStorage.getCache("TOKEN"),
         "Content-Type": get(config, "headers.Content-Type", "application/json")
       },
       timeout: 5000,

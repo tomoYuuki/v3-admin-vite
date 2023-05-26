@@ -3,10 +3,11 @@ import { useUserStoreHook } from "@/store/modules/user"
 import { usePermissionStoreHook } from "@/store/modules/permission"
 import { ElMessage } from "element-plus"
 import { whiteList } from "@/config/white-list"
-import { getToken } from "@/utils/cache/cookies"
+
 import asyncRouteSettings from "@/config/async-route"
 import NProgress from "nprogress"
 import "nprogress/nprogress.css"
+import localStorage from "@/utils/cache/localStorage"
 
 NProgress.configure({ showSpinner: false })
 
@@ -15,7 +16,7 @@ router.beforeEach(async (to, _from, next) => {
   const userStore = useUserStoreHook()
   const permissionStore = usePermissionStoreHook()
   // 判断该用户是否登录
-  if (getToken()) {
+  if (localStorage.getCache("TOKEN")) {
     if (to.path === "/login") {
       // 如果已经登录，并准备进入 Login 页面，则重定向到主页
       next({ path: "/" })
@@ -26,8 +27,9 @@ router.beforeEach(async (to, _from, next) => {
         try {
           if (asyncRouteSettings.open) {
             // 注意：角色必须是一个数组！ 例如: ['admin'] 或 ['developer', 'editor']
-            await userStore.getInfo()
-            const roles = userStore.roles
+            // await userStore.getInfo()
+            // const roles = userStore.roles
+            const roles = ["admin"]
             // 根据角色生成可访问的 Routes（可访问路由 = 常驻路由 + 有访问权限的动态路由）
             permissionStore.setRoutes(roles)
           } else {

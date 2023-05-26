@@ -19,12 +19,19 @@ export const setActiveThemeName = (themeName: ThemeName) => {
 
 class LocalStorage {
   setCache(key: string, value: string) {
-    window.localStorage.setItem(key, value)
+    try {
+      localStorage.setItem(key, JSON.stringify(value))
+    } catch (error) {
+      console.error("Error set data in LocalStorage:", error)
+    }
   }
   getCache(key: string) {
-    const value = window.localStorage.getItem(key)
-    if (value) {
-      return JSON.parse(value)
+    try {
+      const value = localStorage.getItem(key)
+      return value ? JSON.parse(value) : null
+    } catch (error) {
+      console.error("Error get data from LocalStorage:", error)
+      return null
     }
   }
   deleteCache(key: string) {
@@ -35,4 +42,4 @@ class LocalStorage {
   }
 }
 
-export default LocalStorage
+export default new LocalStorage()

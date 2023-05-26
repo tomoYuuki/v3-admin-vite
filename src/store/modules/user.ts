@@ -3,15 +3,15 @@ import store from "@/store"
 import { defineStore } from "pinia"
 import { usePermissionStore } from "./permission"
 import { useTagsViewStore } from "./tags-view"
-import { getToken, removeToken, setToken } from "@/utils/cache/cookies"
 import router, { resetRouter } from "@/router"
 import { loginApi, getUserInfoApi } from "@/api/login"
 import { type LoginRequestData } from "@/api/login/types/login"
 import { type RouteRecordRaw } from "vue-router"
 import asyncRouteSettings from "@/config/async-route"
+import localStorage from "@/utils/cache/localStorage"
 
 export const useUserStore = defineStore("user", () => {
-  const token = ref<string>(getToken() || "")
+  const token = ref<string>(localStorage.getCache("TOKEN") || "")
   const roles = ref<string[]>([])
   const username = ref<string>("")
 
@@ -34,7 +34,7 @@ export const useUserStore = defineStore("user", () => {
       })
         .then((res) => {
           const { adminSessionId } = res.data
-          setToken(adminSessionId)
+          localStorage.setCache("TOKEN", adminSessionId)
           token.value = adminSessionId
           resolve(true)
         })
@@ -68,7 +68,7 @@ export const useUserStore = defineStore("user", () => {
   const changeRoles = async (role: string) => {
     const newToken = "token-" + role
     token.value = newToken
-    setToken(newToken)
+    localStorage.setCache("TOKEN", newToken)
     await getInfo()
     permissionStore.setRoutes(roles.value)
     resetRouter()
@@ -79,7 +79,7 @@ export const useUserStore = defineStore("user", () => {
   }
   /** 登出 */
   const logout = () => {
-    removeToken()
+    localStorage.deleteCache("TOKEN")
     token.value = ""
     roles.value = []
     resetRouter()
@@ -87,7 +87,7 @@ export const useUserStore = defineStore("user", () => {
   }
   /** 重置 Token */
   const resetToken = () => {
-    removeToken()
+    localStorage.deleteCache("TOKEN")
     token.value = ""
     roles.value = []
   }
