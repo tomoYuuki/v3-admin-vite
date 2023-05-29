@@ -15,3 +15,9 @@ export type LoginCodeResponseData = ApiResponseData<string>
 export type LoginResponseData = ApiResponseData<{ adminSessionId: string }>
 
 export type UserInfoResponseData = ApiResponseData<{ username: string; roles: string[] }>
+
+export interface MenuRequestData {
+  adminSessionId: string
+}
+
+export type UserMenuResponseData = ApiResponseData<any[]>

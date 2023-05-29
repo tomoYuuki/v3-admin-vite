@@ -4,7 +4,7 @@ import { defineStore } from "pinia"
 import { usePermissionStore } from "./permission"
 import { useTagsViewStore } from "./tags-view"
 import router, { resetRouter } from "@/router"
-import { loginApi, getUserInfoApi } from "@/api/login"
+import { loginApi, getUserInfoApi, getUserMenuApi } from "@/api/login"
 import { type LoginRequestData } from "@/api/login/types/login"
 import { type RouteRecordRaw } from "vue-router"
 import asyncRouteSettings from "@/config/async-route"
@@ -13,6 +13,7 @@ import localStorage from "@/utils/cache/localStorage"
 export const useUserStore = defineStore("user", () => {
   const token = ref<string>(localStorage.getCache("TOKEN") || "")
   const roles = ref<string[]>([])
+  const menus = ref<any[]>([])
   const username = ref<string>("")
 
   const permissionStore = usePermissionStore()
@@ -64,6 +65,21 @@ export const useUserStore = defineStore("user", () => {
         })
     })
   }
+  /** 获取用户菜单列表 */
+  const getMenus = () => {
+    return new Promise((resolve, reject) => {
+      getUserMenuApi({ adminSessionId: token.value })
+        .then((res) => {
+          const data: any = res.data
+          menus.value = data
+          resolve(data)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
+
   /** 切换角色 */
   const changeRoles = async (role: string) => {
     const newToken = "token-" + role
@@ -97,7 +113,7 @@ export const useUserStore = defineStore("user", () => {
     tagsViewStore.delAllCachedViews()
   }
 
-  return { token, roles, username, setRoles, login, getInfo, changeRoles, logout, resetToken }
+  return { token, roles, username, setRoles, menus, login, getInfo, getMenus, changeRoles, logout, resetToken }
 })
 
 /** 在 setup 外使用 */

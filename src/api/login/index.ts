@@ -25,3 +25,12 @@ export function getUserInfoApi() {
     method: "get"
   })
 }
+
+/** 获取用户菜单 */
+export function getUserMenuApi(params: Login.MenuRequestData) {
+  return request<Login.UserMenuResponseData>({
+    url: "admin/auth",
+    method: "get",
+    params
+  })
+}

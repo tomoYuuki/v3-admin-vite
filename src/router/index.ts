@@ -253,6 +253,36 @@ export const constantRoutes: RouteRecordRaw[] = [
  */
 export const asyncRoutes: RouteRecordRaw[] = [
   {
+    path: "/home",
+    component: Layout,
+    redirect: "/home/list",
+    name: "Home",
+    meta: {
+      title: "安养院管理",
+      elIcon: "House",
+      alwaysShow: true // 将始终显示根菜单
+    },
+    children: [
+      {
+        path: "list",
+        component: () => import("@/views/home/list/index.vue"),
+        name: "HomeList",
+        meta: {
+          title: "安养院列表"
+        }
+      },
+      {
+        path: "list/add",
+        component: () => import("@/views/home/list/add.vue"),
+        name: "HomeAdd",
+        meta: {
+          title: "安养院添加",
+          activeMenu: "/home/list"
+        }
+      }
+    ]
+  },
+  {
     path: "/permission",
     component: Layout,
     redirect: "/permission/page",
