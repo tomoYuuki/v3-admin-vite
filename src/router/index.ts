@@ -241,6 +241,14 @@ export const constantRoutes: RouteRecordRaw[] = [
         meta: {
           title: "useFullscreenLoading"
         }
+      },
+      {
+        path: "my-test-hook-demo",
+        component: () => import("@/views/hook-demo/my-test-hook-demo.vue"),
+        name: "MyTestHookDemo",
+        meta: {
+          title: "myTestHookDemo"
+        }
       }
     ]
   }
