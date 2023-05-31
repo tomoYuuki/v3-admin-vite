@@ -9,6 +9,7 @@ import { type LoginRequestData } from "@/api/login/types/login"
 import { type RouteRecordRaw } from "vue-router"
 import asyncRouteSettings from "@/config/async-route"
 import localStorage from "@/utils/cache/localStorage"
+import { useFullscreenLoading } from "@/hooks/useFullscreenLoading"
 
 export const useUserStore = defineStore("user", () => {
   const token = ref<string>(localStorage.getCache("TOKEN") || "")
@@ -26,14 +27,22 @@ export const useUserStore = defineStore("user", () => {
   /** 登录 */
   const login = (loginData: LoginRequestData) => {
     return new Promise((resolve, reject) => {
-      loginApi({
+      // loginApi({
+      //   loginName: loginData.loginName,
+      //   password: loginData.password,
+      //   captcha: loginData.captcha,
+      //   captchaId: loginData.captchaId,
+      //   operate: "login"
+      // })
+      // 优化：使用useFullscreenLoading,登录时会出现loading
+      useFullscreenLoading(loginApi)({
         loginName: loginData.loginName,
         password: loginData.password,
         captcha: loginData.captcha,
         captchaId: loginData.captchaId,
         operate: "login"
       })
-        .then((res) => {
+        .then((res: any) => {
           const { adminSessionId } = res.data
           localStorage.setCache("TOKEN", adminSessionId)
           token.value = adminSessionId
